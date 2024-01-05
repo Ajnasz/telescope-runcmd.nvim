@@ -17,9 +17,25 @@ local function merge_tables(...)
   end
   return output
 end
+local function new_fn_command(name, cmd)
+  return {display = name, value = cmd, ordinal = name}
+end
+local function new_str_command(name, cmd)
+  local function _1_()
+    return vim.cmd(cmd)
+  end
+  return {display = name, value = _1_, ordinal = name}
+end
+local function new_command(name, cmd)
+  if ("string" == type(cmd)) then
+    return new_str_command(name, cmd)
+  else
+    return new_fn_command(name, cmd)
+  end
+end
 local function entry_maker(entry)
   if ("string" == type(entry)) then
-    return __fnl_global__new_2dstr_2dcommand(entry, entry)
+    return new_str_command(entry, entry)
   else
     return entry
   end
@@ -44,10 +60,10 @@ local function new_finder(opts)
 end
 local function new_mappings()
   local function attach_mappings(prompt_bufnr, _)
-    local function _3_()
+    local function _5_()
       return execute_commands(prompt_bufnr)
     end
-    do end (actions.select_default):replace(_3_)
+    do end (actions.select_default):replace(_5_)
     return true
   end
   return attach_mappings
@@ -56,22 +72,6 @@ local function custom_command_picker(opts)
   (opts or {})["results"] = merge_tables((vim.g.custom_commands or {}), (vim.w.custom_commands or {}), (vim.b.custom_commands or {}), (((opts or {})).results or {}))
   local picker = pickers.new(opts, {prompt_title = "Execute Command", finder = new_finder(opts), sorter = conf.generic_sorter(opts), attach_mappings = new_mappings()})
   return picker:find()
-end
-local function new_fn_command(name, cmd)
-  return {display = name, value = cmd, ordinal = name}
-end
-local function new_str_command(name, cmd)
-  local function _4_()
-    return vim.cmd(cmd)
-  end
-  return {display = name, value = _4_, ordinal = name}
-end
-local function new_command(name, cmd)
-  if ("string" == type(cmd)) then
-    return new_str_command(name, cmd)
-  else
-    return new_fn_command(name, cmd)
-  end
 end
 local function esc()
   return vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, false, true), "ni", false)
