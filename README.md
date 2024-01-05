@@ -6,28 +6,28 @@ Examples
 local runcmd = require("runcmd")
 local telescope = require("telescope")
 
-local function insert_at_cursor(lines)
+function insert_at_cursor(lines)
   return vim.api.nvim_put(lines, "c", false, true)
 end
-local function insert_date_str(format)
+function insert_date_str(format)
   return insert_at_cursor({vim.fn.strftime(format)})
 end
-local function insert_date()
+function insert_date()
   return insert_date_str("%Y-%m-%d")
 end
-local function insert_time()
+function insert_time()
   return insert_date_str("%H:%M:%S")
 end
-local function insert_date_time()
+function insert_date_time()
   return insert_date_str("%Y-%m-%d %H:%M:%S")
 end
-local function insert_uuid()
+function insert_uuid()
   return insert_at_cursor(vim.fn.systemlist("uuid | tr -d '\n'"))
 end
-local function insert_objectid()
+function insert_objectid()
   return insert_at_cursor(vim.fn.systemlist("objectid | tr -d '\n'"))
 end
-local function insert_something()
+function insert_something()
   return insert_at_cursor({"something"})
 end
 
