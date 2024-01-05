@@ -1,9 +1,3 @@
-(local actions (require :telescope.actions))
-(local action_state (require :telescope.actions.state))
-(local finders (require :telescope.finders))
-(local pickers (require :telescope.pickers))
-(local conf (. (require :telescope.config) :values))
-
 (fn merge-tables [...]
   (accumulate
     [ output [] _ tbl (ipairs [...]) ]
@@ -42,11 +36,15 @@
 
 (fn execute-commands [prompt-bufnr]
   (let [
+        action_state (require :telescope.actions.state)
         picker (action_state.get_current_picker prompt-bufnr)
         selection (action_state.get_selected_entry prompt-bufnr)
         cmd (. selection :value)
         ]
+
+    (local actions (require :telescope.actions))
     (actions.close prompt-bufnr)
+
     (let [(ok? err) (pcall cmd)]
       (when (and err (not (= err ""))) (vim.notify err vim.log.levels.ERROR)))
     true
@@ -54,6 +52,7 @@
 
 (fn new-finder [opts]
   (local entry-maker (or (. (or opts {}) :entry_maker) entry-maker))
+  (local finders (require :telescope.finders))
   (finders.new_table
     {
      :results (or (. (or opts {}) :results) [])
@@ -62,6 +61,7 @@
 
 (fn new-mappings []
   (fn attach-mappings [prompt_bufnr _]
+    (local actions (require :telescope.actions))
     (actions.select_default:replace #(execute-commands prompt_bufnr))
     true)
   )
@@ -73,6 +73,8 @@
                 (or vim.b.custom_commands [])
                 (or (. (or opts {}) :results) [])))
 
+  (local pickers (require :telescope.pickers))
+  (local conf (. (require :telescope.config) :values))
   (local picker (pickers.new opts
                {:prompt_title "Execute Command"
                 :finder (new-finder opts)
@@ -83,6 +85,7 @@
   )
 
 (fn esc [] (vim.api.nvim_feedkeys (vim.api.nvim_replace_termcodes "<esc>" true false true) "ni" false))
+
 {
  :custom_picker custom-command-picker
  :new_command new-command

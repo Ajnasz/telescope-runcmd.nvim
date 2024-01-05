@@ -1,8 +1,3 @@
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
-local finders = require("telescope.finders")
-local pickers = require("telescope.pickers")
-local conf = (require("telescope.config")).values
 local function merge_tables(...)
   local output = {}
   for _, tbl in ipairs({...}) do
@@ -41,9 +36,11 @@ local function entry_maker(entry)
   end
 end
 local function execute_commands(prompt_bufnr)
+  local action_state = require("telescope.actions.state")
   local picker = action_state.get_current_picker(prompt_bufnr)
   local selection = action_state.get_selected_entry(prompt_bufnr)
   local cmd = selection.value
+  local actions = require("telescope.actions")
   actions.close(prompt_bufnr)
   do
     local ok_3f, err = pcall(cmd)
@@ -56,10 +53,12 @@ local function execute_commands(prompt_bufnr)
 end
 local function new_finder(opts)
   local entry_maker0 = (((opts or {})).entry_maker or entry_maker)
+  local finders = require("telescope.finders")
   return finders.new_table({results = (((opts or {})).results or {}), entry_maker = entry_maker0})
 end
 local function new_mappings()
   local function attach_mappings(prompt_bufnr, _)
+    local actions = require("telescope.actions")
     local function _5_()
       return execute_commands(prompt_bufnr)
     end
@@ -70,6 +69,8 @@ local function new_mappings()
 end
 local function custom_command_picker(opts)
   (opts or {})["results"] = merge_tables((vim.g.custom_commands or {}), (vim.w.custom_commands or {}), (vim.b.custom_commands or {}), (((opts or {})).results or {}))
+  local pickers = require("telescope.pickers")
+  local conf = (require("telescope.config")).values
   local picker = pickers.new(opts, {prompt_title = "Execute Command", finder = new_finder(opts), sorter = conf.generic_sorter(opts), attach_mappings = new_mappings()})
   return picker:find()
 end
