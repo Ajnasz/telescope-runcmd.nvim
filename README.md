@@ -1,5 +1,7 @@
 # RunCMD Telescope extension
 
+![runcmd](https://github.com/Ajnasz/runcmd.nvim/assets/38329/c447ed71-b0e3-4759-ad31-249ccf22ebe8)
+
 Examples
 
 ```lua
