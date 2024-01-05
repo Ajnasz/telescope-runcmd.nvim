@@ -16,7 +16,24 @@
     )
   )
 
-(fn entry_maker [entry]
+(fn new-fn-command [name cmd] {
+  :display name
+  :value cmd
+  :ordinal name
+  })
+
+(fn new-str-command [name cmd] {
+  :display name
+  :value #(vim.cmd cmd)
+  :ordinal name
+  })
+
+(fn new-command [name cmd]
+  (if (= "string" (type cmd))
+    (new-str-command name cmd)
+    (new-fn-command name cmd)))
+
+(fn entry-maker [entry]
   (if (= "string" (type entry))
     (new-str-command entry entry)
     entry
@@ -36,11 +53,11 @@
   ))
 
 (fn new-finder [opts]
-  (local entry_maker (or (. (or opts {}) :entry_maker) entry_maker))
+  (local entry-maker (or (. (or opts {}) :entry_maker) entry-maker))
   (finders.new_table
     {
      :results (or (. (or opts {}) :results) [])
-     :entry_maker entry_maker
+     :entry_maker entry-maker
      }))
 
 (fn new-mappings []
@@ -64,23 +81,6 @@
                 }))
   (picker:find)
   )
-
-(fn new-fn-command [name cmd] {
-  :display name
-  :value cmd
-  :ordinal name
-  })
-
-(fn new-str-command [name cmd] {
-  :display name
-  :value #(vim.cmd cmd)
-  :ordinal name
-  })
-
-(fn new-command [name cmd]
-  (if (= "string" (type cmd))
-    (new-str-command name cmd)
-    (new-fn-command name cmd)))
 
 (fn esc [] (vim.api.nvim_feedkeys (vim.api.nvim_replace_termcodes "<esc>" true false true) "ni" false))
 {
