@@ -1,6 +1,5 @@
 local telescope = require("telescope")
 local runcmd = require("runcmd")
-print("register runcmd")
 local function _1_(opts)
   return opts
 end
