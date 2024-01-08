@@ -12,28 +12,52 @@ local function merge_tables(...)
   end
   return output
 end
-local function new_fn_command(name, cmd)
-  return {display = name, value = cmd, ordinal = name}
+local function map(cmd, tbl)
+  local o = {}
+  for _, v in ipairs(tbl) do
+    table.insert(o, cmd(v))
+    o = o
+  end
+  return o
 end
-local function new_str_command(name, cmd)
+local function new_fn_command(name, cmd, description)
+  return {name = name, value = cmd, ordinal = name, description = description}
+end
+local function new_str_command(name, cmd, description)
   local function _1_()
     return vim.cmd(cmd)
   end
-  return {display = name, value = _1_, ordinal = name}
+  return {name = name, value = _1_, ordinal = name, description = cmd}
 end
-local function new_command(name, cmd)
+local function new_command(name, cmd, description)
   if ("string" == type(cmd)) then
-    return new_str_command(name, cmd)
+    return new_str_command(name, cmd, description)
   else
-    return new_fn_command(name, cmd)
+    return new_fn_command(name, cmd, description)
   end
+end
+local function new_command_from_obj(obj)
+  return new_command(obj.name, obj.cmd, obj.description)
+end
+local function new_displayer()
+  local entry_display = require("telescope.pickers.entry_display")
+  return entry_display.create({separator = " | ", items = {{width = 30}, {remaining = true}}})
+end
+local function make_display(displayer)
+  local function _3_(entry)
+    return displayer({entry.name, entry.description})
+  end
+  return _3_
 end
 local function entry_maker(entry)
+  local new_entry
   if ("string" == type(entry)) then
-    return new_str_command(entry, entry)
+    new_entry = new_str_command(entry, entry, "", "")
   else
-    return entry
+    new_entry = entry
   end
+  new_entry["display"] = make_display(new_displayer())
+  return new_entry
 end
 local function fix_telescope_cursor_position(picker_mode)
   local cursor_valid, original_cursor = pcall(vim.api.nvim_win_get_cursor, 0)
@@ -53,9 +77,10 @@ local function execute_commands(prompt_bufnr)
   actions.close(prompt_bufnr)
   vim.cmd.stopinsert()
   fix_telescope_cursor_position(picker_mode)
+  local curpos = vim.fn.getpos(".")
   do
     local ok_3f, err = pcall(cmd)
-    if (err and not (err == "")) then
+    if not ok_3f then
       vim.notify(err, vim.log.levels.ERROR)
     else
     end
@@ -70,16 +95,16 @@ end
 local function new_mappings()
   local function attach_mappings(prompt_bufnr, _)
     local actions = require("telescope.actions")
-    local function _6_()
+    local function _7_()
       return execute_commands(prompt_bufnr)
     end
-    do end (actions.select_default):replace(_6_)
+    do end (actions.select_default):replace(_7_)
     return true
   end
   return attach_mappings
 end
 local function custom_command_picker(opts)
-  (opts or {})["results"] = merge_tables((vim.g.custom_commands or {}), (vim.w.custom_commands or {}), (vim.b.custom_commands or {}), (((opts or {})).results or {}))
+  (opts or {})["results"] = map(new_command_from_obj, merge_tables((vim.g.runcmd_commands or {}), (vim.w.runcmd_commands or {}), (vim.b.runcmd_commands or {}), (((opts or {})).results or {})))
   local pickers = require("telescope.pickers")
   local conf = (require("telescope.config")).values
   local picker = pickers.new(opts, {prompt_title = "Execute Command", finder = new_finder(opts), sorter = conf.generic_sorter(opts), attach_mappings = new_mappings()})

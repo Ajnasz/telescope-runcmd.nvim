@@ -10,28 +10,56 @@
     )
   )
 
-(fn new-fn-command [name cmd] {
-  :display name
+(fn map [cmd tbl]
+  (accumulate
+    [ o [] _ v (ipairs tbl) ]
+    (do (table.insert o (cmd v)) o)))
+
+(fn new-fn-command [name cmd description]
+  {
+  :name name
   :value cmd
   :ordinal name
+  :description description
   })
 
-(fn new-str-command [name cmd] {
-  :display name
+(fn new-str-command [name cmd description]
+  {
+  :name name
   :value #(vim.cmd cmd)
   :ordinal name
+  :description cmd
   })
 
-(fn new-command [name cmd]
+(fn new-command [name cmd description]
   (if (= "string" (type cmd))
-    (new-str-command name cmd)
-    (new-fn-command name cmd)))
+    (new-str-command name cmd description)
+    (new-fn-command name cmd description)))
+
+(fn new-command-from-obj [obj]
+  (new-command (. obj :name) (. obj :cmd) (. obj :description)))
+
+(fn new-displayer []
+  (local entry_display (require :telescope.pickers.entry_display))
+  (entry_display.create
+    {
+     :separator " | "
+     :items [ { :width 30 } { :remaining true } ]
+     }
+    ))
+
+(fn make-display [displayer]
+  (fn [entry]
+    (displayer
+      [(. entry :name) (. entry :description)])))
 
 (fn entry-maker [entry]
-  (if (= "string" (type entry))
-    (new-str-command entry entry)
+  (local new_entry (if (= "string" (type entry))
+    (new-str-command entry entry "" "")
     entry
-    )
+    ))
+  (tset new_entry :display (make-display (new-displayer)))
+  new_entry
   )
 
 (fn fix-telescope-cursor-position [picker_mode]
@@ -61,11 +89,12 @@
 
     (vim.cmd.stopinsert)
     (fix-telescope-cursor-position picker_mode)
+    (local curpos (vim.fn.getpos "."))
     (let [(ok? err) (pcall cmd)]
-      (when (and err (not (= err ""))) (vim.notify err vim.log.levels.ERROR)))
+      (when (not ok?)
+        (vim.notify err vim.log.levels.ERROR)))
     true
     ))
-
 (fn new-finder [opts]
   (let [
         entry-maker (or (. (or opts {}) :entry_maker) entry-maker)
@@ -87,11 +116,11 @@
 
 (fn custom-command-picker [opts]
   (tset (or opts {}) :results
-        (merge-tables
-          (or vim.g.custom_commands [])
-          (or vim.w.custom_commands [])
-          (or vim.b.custom_commands [])
-          (or (. (or opts {}) :results) [])))
+        (map new-command-from-obj (merge-tables
+          (or vim.g.runcmd_commands [])
+          (or vim.w.runcmd_commands [])
+          (or vim.b.runcmd_commands [])
+          (or (. (or opts {}) :results) []))))
 
   (let [
         pickers (require :telescope.pickers)
