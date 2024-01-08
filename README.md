@@ -28,12 +28,22 @@ end
 vim.api.nvim_create_user_command("UUID", insert_uuid, {})
 vim.api.nvim_create_user_command("Something", insert_something, {})
 
-vim.g.custom_commands = {
+-- global commands
+vim.g.runcmd_commands = {
     runcmd.new_command("UUID", insert_uuid),
     runcmd.new_command("Something", insert_something),
     runcmd.new_command("Git", "Git"),
 }
 
+-- command for specific filetype
+vim.api.nvim_create_autocmd({ "FileType" }, {
+    pattern = {"ledger"},
+    callback = function()
+        vim.b.runcmd_commands = {
+            runcmd.new_command("Align Buffer", "LedgerAlignBuffer"),
+        }
+    end
+})
 telescope.load_extension("runcmd")
 
 vim.keymap.set("n", "<leader>cmd", ":Telescope runcmd<cr>", {buffer = true})
