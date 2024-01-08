@@ -30,9 +30,9 @@ vim.api.nvim_create_user_command("Something", insert_something, {})
 
 -- global commands
 vim.g.runcmd_commands = {
-    runcmd.new_command("UUID", insert_uuid),
-    runcmd.new_command("Something", insert_something),
-    runcmd.new_command("Git", "Git"),
+    { name = "UUID", cmd = insert_uuid, description = "Insert UUID" },
+    { name = "Something", cmd = insert_something, description = "Insert Something" },
+    { name = "Git", cmd = "Git", description = "Open Git" },
 }
 
 -- command for specific filetype
@@ -40,7 +40,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     pattern = {"ledger"},
     callback = function()
         vim.b.runcmd_commands = {
-            runcmd.new_command("Align Buffer", "LedgerAlignBuffer"),
+            { name = "Align Buffer", cmd = "LedgerAlignBuffer", description = "Aligns the commodity for each posting in the entire buffer" },
         }
     end
 })
