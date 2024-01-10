@@ -4,5 +4,5 @@
 (telescope.register_extension
   {
    :setup (fn [opts] opts)
-   :exports { :runcmd (fn [] (runcmd.custom_picker {})) }
+   :exports { :runcmd (fn [] (runcmd.open {})) }
    })
