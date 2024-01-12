@@ -72,7 +72,7 @@
     (finders.new_table
       {
        :results (tables.map
-                  command.new_command_from_obj
+                  command.new_command
                   (or (?. opts :results) []))
        :entry_maker entry-maker
        })))
