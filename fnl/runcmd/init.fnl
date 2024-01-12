@@ -10,7 +10,8 @@
 
   (local runcmdpicker (require "runcmd.picker"))
 
-  (runcmdpicker.open { :results (or (?. opts :results) []) })
+  (print "callopen" opts)
+  (runcmdpicker.open opts)
   )
 
 { :open open }

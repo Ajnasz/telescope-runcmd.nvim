@@ -68,7 +68,7 @@ local function new_finder(opts)
     end
     return t_9_
   end
-  return finders.new_table({results = tables.map(command.new_command, (_8_() or {})), entry_maker = entry_maker0})
+  return finders.new_table({results = tables.map(command.new_command_from_object, (_8_() or {})), entry_maker = entry_maker0})
 end
 local function new_mappings()
   local function attach_mappings(prompt_bufnr, _)

@@ -22,9 +22,13 @@
     (new-str-command name cmd description)
     (new-fn-command name cmd description)))
 
+(fn new-command-from-object [obj]
+  "creates a new command from the given object"
+  (new-command (. obj :name) (. obj :value) (. obj :description)))
 
 {
 :new_fn_command new-fn-command
 :new_str_command new-str-command
 :new_command new-command
+:new_command_from_object new-command-from-object
 }

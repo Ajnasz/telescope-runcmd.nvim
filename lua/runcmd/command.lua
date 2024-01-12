@@ -14,4 +14,7 @@ local function new_command(name, cmd, description)
     return new_fn_command(name, cmd, description)
   end
 end
-return {new_fn_command = new_fn_command, new_str_command = new_str_command, new_command = new_command}
+local function new_command_from_object(obj)
+  return new_command(obj.name, obj.value, obj.description)
+end
+return {new_fn_command = new_fn_command, new_str_command = new_str_command, new_command = new_command, new_command_from_object = new_command_from_object}

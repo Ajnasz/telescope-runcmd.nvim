@@ -10,14 +10,7 @@ local function open(opts)
   end
   do end ((opts or {}))["results"] = tables.merge((vim.g.runcmd_commands or {}), (vim.w.runcmd_commands or {}), (vim.b.runcmd_commands or {}), (_1_() or {}))
   local runcmdpicker = require("runcmd.picker")
-  local function _4_(...)
-    local t_5_ = opts
-    if (nil ~= t_5_) then
-      t_5_ = t_5_.results
-    else
-    end
-    return t_5_
-  end
-  return runcmdpicker.open({results = (_4_() or {})})
+  print("callopen", opts)
+  return runcmdpicker.open(opts)
 end
 return {open = open}

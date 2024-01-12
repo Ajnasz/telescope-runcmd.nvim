@@ -120,6 +120,14 @@ command.new_command({name}, {cmd}, {description}) *telescope-runcmd.command.new_
       will be displayed in the telescope window
 
 
+command.new_command_from_object({cmd})
+*telescope-runcmd.command.new_command_from_object*
+    Creates a new command from a general command object.
+
+    Parameters:
+    - {obj} table - with required keys of {name}, {cmd} and optional
+      {description}. See |telescope-runcmd-command|
+
 ==============================================================================
 TABLES                                               *telescope-runcmd.tables*
 

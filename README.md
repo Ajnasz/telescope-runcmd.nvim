@@ -38,7 +38,7 @@ vim.g.runcmd_commands = {
     {
         name = "Lsp ->",
         cmd = function()
-            local picker = require('telescope-runcmd.picker')
+            local picker = require('runcmd.picker')
             picker.open({
                 results = {
                     { name = "Start LSP", cmd = "LspStart", description = "start lsp" },
