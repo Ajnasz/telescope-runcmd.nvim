@@ -13,9 +13,4 @@
   (runcmdpicker.open { :results (or (?. opts :results) []) })
   )
 
-(fn esc [] (vim.cmd.stopinsert))
-
-{
- :open open
- :esc esc
- }
+{ :open open }

@@ -20,7 +20,4 @@ local function open(opts)
   end
   return runcmdpicker.open({results = (_4_() or {})})
 end
-local function esc()
-  return vim.cmd.stopinsert()
-end
-return {open = open, esc = esc}
+return {open = open}
