@@ -5,6 +5,7 @@
     (do (table.insert o (cmd v)) o)))
 
 (fn merge [...]
+  "merges all tables passed in into a new table"
   (accumulate
     [ output [] _ tbl (ipairs [...]) ]
     (do
