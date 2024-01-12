@@ -1,0 +1,146 @@
+*telescope-runcmd.txt*    Telescope Run Command Picker
+
+              Telescope Run Command Picker
+
+To use the Telescope Run Command picker, call the |telescope-runcmd.open|
+function with the desired options.
+
+
+telescope-runcmd.open({opts})                          *telescope-runcmd.open*
+    Opens a new picker for Telescope with the specified commands defined in
+    vim.g.runcmd_commands, vim.w.runcmd_commands, vim.b.runcmd_commands and in
+    the passed {opts.results}. Commands listed in these variables will be
+    merged together. For the command syntax see |telescope-runcmd-command|
+
+    Parameters: ~
+      • {opts} (table): Optional table with configuration options.
+        • {results} (table): List of command results to display in the picker.
+
+    Configuration example: >lua
+    local runcmd = require("telescope-runcmd")
+    -- add a global command which will be available in all buffers
+    vim.g.runcmd_commands = {
+      -- list of commands available in every buffer
+    }
+
+    -- add a `LuaFunc` command which will be available only in lua files
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+        pattern = {"lua"},
+        callback = function()
+            vim.b.runcmd_commands = {
+              -- list of commands for lua filetype
+            }
+        end
+    })
+    runcmd.open({
+      results = {
+        -- additional commands
+      }
+    })
+<
+
+                                                    *telescope-runcmd-command*
+
+A command is a table with a {name} (required), {cmd} (required) and
+{description} (optional).
+
+- The {name} field will be dispplayed in the telescope picker.
+- The {cmd} is a text or a lua function.
+- If {cmd} is a text it will be executed with |vim.cmd|
+
+Examples: >lua
+    -- text command which opens all the available user commands in Telescope
+    {
+      name = "List user commands",
+      cmd = "Telescope commands",
+      description = "Opens telescope with all the available user commands"
+    }
+
+    -- lua command which inserts current date to the cursor position
+    {
+      name = "Insert date",
+      cmd = function()
+        vim.api.nvim_put({vim.fn.strftime("%Y-%m-%d")}, "", false, true)
+      end,
+      description = "Opens telescope with all the available user commands"
+    }
+<
+
+runcmd.picker.open({opts})                      *telescope-runcmd.picker.open*
+
+    Opens the Telescope picker which calls the function stored in the select
+    item's {value}.
+
+    Parameters:
+    - `results` (table): List of command results to display in the picker.
+      For command configuration see |telescope-runcmd-command|
+
+
+==============================================================================
+COMMAND                                             *telescope-runcmd.command*
+
+A set of functions to construct commands
+
+
+command.new_fn_command({name}, {cmd}, {description}) *telescope-runcmd.command.new_fn_command*
+
+    Creates a new command which will can directly executed by the plugin on
+    selection.
+
+    Parameters:
+    - {name} string - Name of the command that will be displayed in the
+      telescope window
+    - {cmd} function - lua function to execute
+    - {description} optional string - Additional info about the command, it
+      will be displayed in the telescope window
+
+
+command.new_str_command({name}, {cmd}, {description}) *telescope-runcmd.command.new_str_command*
+
+    Creates a new command that will the string given in {cmd} with a |vim.cmd|
+    when the command selected.
+
+    Parameters:
+    - {name} string - Name of the command that will be displayed in the
+      telescope window
+    - {cmd} string - User command to execute
+    - {description} optional string - Additional info about the command, it
+      will be displayed in the telescope window
+
+
+command.new_command({name}, {cmd}, {description}) *telescope-runcmd.command.new_command*
+    Creates a new command from a general command object.
+
+    Parameters:
+    - {name} string - Name of the command that will be displayed in the
+      telescope window
+    - {cmd} string or function - User command to execute or a lua function to
+      execute
+    - {description} optional string - Additional info about the command, it
+      will be displayed in the telescope window
+
+
+==============================================================================
+TABLES                                               *telescope-runcmd.tables*
+
+A set of helper functions for lua table management
+
+
+runcmd.tables.map({cmd}, {tbl})                  *telescope-runcmd.tables.map*
+  
+    Maps through a sequential table and applies {cmd} to each element,
+    returning a new table
+
+    Parameters:
+    - {cmd} lua function to apply on table elements
+    - {tbl} sequential table
+
+
+runcmd.tables.merge({...})                     *telescope-runcmd.tables.merge*
+    Merges all tables passed in into a new table
+
+    Parameters:
+    - {...} list of tables
+
+
+ vim:tw=78:et:ft=help:norl:

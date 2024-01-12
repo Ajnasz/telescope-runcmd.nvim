@@ -9,7 +9,7 @@ local runcmd = require("runcmd")
 local telescope = require("telescope")
 
 function insert_at_cursor(lines)
-  return vim.api.nvim_put(lines, "c", false, true)
+  return vim.api.nvim_put(lines, "", false, true)
 end
 function insert_date_str(format)
   return insert_at_cursor({vim.fn.strftime(format)})
@@ -30,17 +30,37 @@ vim.api.nvim_create_user_command("Something", insert_something, {})
 
 -- global commands
 vim.g.runcmd_commands = {
+    -- lua function command
     { name = "UUID", cmd = insert_uuid, description = "Insert UUID" },
-    { name = "Something", cmd = insert_something, description = "Insert Something" },
+    -- text user command
     { name = "Git", cmd = "Git", description = "Open Git" },
+    -- subcommands
+    {
+        name = "Lsp ->",
+        cmd = function()
+            local picker = require('telescope-runcmd.picker')
+            picker.open({
+                results = {
+                    { name = "Start LSP", cmd = "LspStart", description = "start lsp" },
+                    { name = "Stop LSP", cmd = "LspStop" , description = "stop lsp" },
+                    { name = "LSP Info", cmd = "LspInfo" , description = "lsp info" },
+                },
+            })
+        end,
+        description = "LSP commands",
+    },
 }
 
--- command for specific filetype
+-- commands for specific filetype
 vim.api.nvim_create_autocmd({ "FileType" }, {
     pattern = {"ledger"},
     callback = function()
         vim.b.runcmd_commands = {
-            { name = "Align Buffer", cmd = "LedgerAlignBuffer", description = "Aligns the commodity for each posting in the entire buffer" },
+            {
+                name = "Align Buffer",
+                cmd = "LedgerAlignBuffer",
+                description = "Aligns the commodity for each posting in the entire buffer",
+            },
         }
     end
 })
