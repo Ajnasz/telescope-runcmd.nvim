@@ -24,20 +24,6 @@
   new_entry
   )
 
-(fn fix-telescope-cursor-position [picker_mode]
-  "fixes the cursor position after executing a command in telescope. This is necessary because telescope moves the cursor to the end of the line after executing a command."
-  (let [(cursor_valid original_cursor) (pcall vim.api.nvim_win_get_cursor 0)]
-    (when
-      (and
-        cursor_valid
-        (= "i" (. (vim.api.nvim_get_mode) :mode))
-        (not (= "i" picker_mode)))
-      (pcall
-        vim.api.nvim_win_set_cursor 0 [ (. original_cursor 1) (- (. original_cursor 2) 1) ])
-      )
-    )
-  )
-
 (fn execute-commands [prompt-bufnr]
   "executes the selected command in telescope"
   (let [
@@ -51,12 +37,13 @@
 
     (actions.close prompt-bufnr)
 
+    (vim.print selection)
     (vim.cmd.stopinsert)
-    (fix-telescope-cursor-position picker_mode)
+    ; (fix-telescope-cursor-position picker_mode)
     (local curpos (vim.fn.getpos "."))
-    (let [(ok? err) (pcall cmd)]
+    (vim.schedule #(let [(ok? err) (pcall cmd)]
       (when (not ok?)
-        (vim.notify err vim.log.levels.ERROR)))
+        (vim.notify err vim.log.levels.ERROR))))
     true
     ))
 

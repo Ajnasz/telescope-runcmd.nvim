@@ -18,14 +18,6 @@ local function entry_maker(entry)
   new_entry["display"] = make_display(new_displayer())
   return new_entry
 end
-local function fix_telescope_cursor_position(picker_mode)
-  local cursor_valid, original_cursor = pcall(vim.api.nvim_win_get_cursor, 0)
-  if (cursor_valid and ("i" == vim.api.nvim_get_mode().mode) and not ("i" == picker_mode)) then
-    return pcall(vim.api.nvim_win_set_cursor, 0, {original_cursor[1], (original_cursor[2] - 1)})
-  else
-    return nil
-  end
-end
 local function execute_commands(prompt_bufnr)
   local action_state = require("telescope.actions.state")
   local actions = require("telescope.actions")
@@ -34,16 +26,18 @@ local function execute_commands(prompt_bufnr)
   local cmd = selection.value
   local picker_mode = picker._original_mode
   actions.close(prompt_bufnr)
+  vim.print(selection)
   vim.cmd.stopinsert()
-  fix_telescope_cursor_position(picker_mode)
   local curpos = vim.fn.getpos(".")
-  do
+  local function _3_()
     local ok_3f, err = pcall(cmd)
     if not ok_3f then
-      vim.notify(err, vim.log.levels.ERROR)
+      return vim.notify(err, vim.log.levels.ERROR)
     else
+      return nil
     end
   end
+  vim.schedule(_3_)
   return true
 end
 local function new_finder(opts)

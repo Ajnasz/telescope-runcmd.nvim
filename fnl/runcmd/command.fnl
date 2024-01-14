@@ -24,7 +24,7 @@
 
 (fn new-command-from-object [obj]
   "creates a new command from the given object"
-  (new-command (. obj :name) (. obj :value) (. obj :description)))
+  (new-command (. obj :name) (. obj :cmd) (. obj :description)))
 
 {
 :new_fn_command new-fn-command
