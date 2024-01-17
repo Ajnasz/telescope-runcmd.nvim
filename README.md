@@ -21,6 +21,12 @@ You can use the `require("runcmd.picker").open({ results = { ... }})` to open th
 
 For more see the examples below
 
+## Predefined commands
+
+Some predfined commands provided by the plugin:
+
+- [lsp](fnl/runcmd/commands/lsp.fnl): functions provided by the builtin lsp server
+
 ## Examples
 
 ```lua
@@ -60,11 +66,7 @@ vim.g.runcmd_commands = {
         cmd = function()
             local picker = require('runcmd.picker')
             picker.open({
-                results = {
-                    { name = "Start LSP", cmd = "LspStart", description = "start lsp" },
-                    { name = "Stop LSP", cmd = "LspStop" , description = "stop lsp" },
-                    { name = "LSP Info", cmd = "LspInfo" , description = "lsp info" },
-                },
+                results = require('runcmd.commands.lsp'),
             })
         end,
         description = "Language Server commands",
