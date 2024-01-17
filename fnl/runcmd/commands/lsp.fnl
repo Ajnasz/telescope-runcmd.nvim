@@ -1,5 +1,10 @@
 [
  {
+  :name "Run codeelens"
+  :cmd #(vim.lsp.codelens.run)
+  :description "Run the code lens in the current line"
+  }
+ {
   :name "Definition"
   :cmd #(vim.lsp.buf.definition)
   :description "Go to definition"
@@ -48,7 +53,7 @@
   }
 
  {
-  :name "CodeAction"
+  :name "Code Action"
   :cmd #(vim.lsp.buf.code_action)
   :description "Selects a code action available at the current cursor position."
   }
