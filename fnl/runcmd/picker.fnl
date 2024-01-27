@@ -24,28 +24,37 @@
   new_entry
   )
 
+(fn get-command-selection [prompt-bufnr]
+  "gets the selected command from telescope"
+  (let [
+        action_state (require :telescope.actions.state)
+        selection (action_state.get_selected_entry prompt-bufnr)
+        ]
+
+    (?. selection :value)
+    ))
 (fn execute-commands [prompt-bufnr]
   "executes the selected command in telescope"
   (let [
-        action_state (require :telescope.actions.state)
-        actions (require :telescope.actions)
-        picker (action_state.get_current_picker prompt-bufnr)
-        selection (action_state.get_selected_entry prompt-bufnr)
-        cmd (. selection :value)
-        picker_mode picker._original_mode
+        cmd (get-command-selection prompt-bufnr)
         ]
 
-    (actions.close prompt-bufnr)
+    (if cmd
+      (let [
+            action_state (require :telescope.actions.state)
+            picker (action_state.get_current_picker prompt-bufnr)
+            picker_mode picker._original_mode
+            ]
+        (actions.close prompt-bufnr)
 
-    (vim.print selection)
-    (vim.cmd.stopinsert)
-    ; (fix-telescope-cursor-position picker_mode)
-    (local curpos (vim.fn.getpos "."))
-    (vim.schedule #(let [(ok? err) (pcall cmd)]
-      (when (not ok?)
-        (vim.notify err vim.log.levels.ERROR))))
-    true
-    ))
+        (vim.cmd.stopinsert)
+        ; (fix-telescope-cursor-position picker_mode)
+        (local curpos (vim.fn.getpos "."))
+        (vim.schedule #(let [(ok? err) (pcall cmd)]
+                         (when (not ok?)
+                           (vim.notify err vim.log.levels.ERROR))))
+        true)
+      (vim.notify "No command selected" vim.log.levels.WARN))))
 
 (fn new-finder [opts]
   "creates a new finder for telescope"
