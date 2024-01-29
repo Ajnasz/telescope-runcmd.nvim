@@ -31,6 +31,7 @@ end
 local function execute_commands(prompt_bufnr)
   local cmd = get_command_selection(prompt_bufnr)
   if cmd then
+    local actions = require("telescope.actions")
     local action_state = require("telescope.actions.state")
     local picker = action_state.get_current_picker(prompt_bufnr)
     local picker_mode = picker._original_mode

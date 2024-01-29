@@ -41,6 +41,7 @@
 
     (if cmd
       (let [
+            actions (require :telescope.actions)
             action_state (require :telescope.actions.state)
             picker (action_state.get_current_picker prompt-bufnr)
             picker_mode picker._original_mode
