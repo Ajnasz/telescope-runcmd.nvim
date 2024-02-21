@@ -1,8 +1,6 @@
 (fn map [cmd tbl]
   "maps through a sequential table and applies cmd to each element, returning a new table"
-  (accumulate
-    [ o [] _ v (ipairs tbl) ]
-    (do (table.insert o (cmd v)) o)))
+  (icollect [_ v (ipairs tbl)] (cmd v)))
 
 (fn merge [...]
   "merges all tables passed in into a new table"
