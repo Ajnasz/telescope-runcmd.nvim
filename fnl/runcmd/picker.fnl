@@ -1,3 +1,4 @@
+(local commands (require "runcmd.command"))
 (fn new-displayer []
   "creates a new displayer for telescope that displays the name and description of a command"
   (local entry_display (require :telescope.pickers.entry_display))
@@ -17,7 +18,7 @@
 (fn entry-maker [entry]
   "creates a new entry for telescope"
   (local new_entry (if (= "string" (type entry))
-    (new-str-command entry entry "" "")
+    (commands.new-str-command entry entry "" "")
     entry
     ))
   (tset new_entry :display (make-display (new-displayer)))

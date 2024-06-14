@@ -1,3 +1,4 @@
+local commands = require("runcmd.command")
 local function new_displayer()
   local entry_display = require("telescope.pickers.entry_display")
   return entry_display.create({separator = " | ", items = {{width = 30}, {remaining = true}}})
@@ -11,7 +12,7 @@ end
 local function entry_maker(entry)
   local new_entry
   if ("string" == type(entry)) then
-    new_entry = __fnl_global__new_2dstr_2dcommand(entry, entry, "", "")
+    new_entry = commands["new-str-command"](entry, entry, "", "")
   else
     new_entry = entry
   end
