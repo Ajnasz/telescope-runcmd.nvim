@@ -5,7 +5,7 @@ local function new_str_command(name, cmd, description)
   local function _1_()
     return vim.cmd(cmd)
   end
-  return {name = name, value = _1_, ordinal = name, description = cmd}
+  return {name = name, value = _1_, ordinal = name, description = description}
 end
 local function new_command(name, cmd, description)
   if ("string" == type(cmd)) then

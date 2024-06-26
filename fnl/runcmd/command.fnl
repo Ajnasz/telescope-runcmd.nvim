@@ -13,7 +13,7 @@
   :name name
   :value #(vim.cmd cmd)
   :ordinal name
-  :description cmd
+  :description description
   })
 
 (fn new-command [name cmd description]
