@@ -89,5 +89,5 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 telescope.load_extension("runcmd")
 
 -- map to hotkey key <leader>cmd
-vim.keymap.set("n", "<leader>cmd", ":Telescope runcmd<cr>", {buffer = true})
+vim.keymap.set("n", "<leader>cmd", ":Telescope runcmd<cr>", {buffer = false})
 ```
