@@ -41,17 +41,11 @@
         ]
 
     (if cmd
-      (let [
-            actions (require :telescope.actions)
-            action_state (require :telescope.actions.state)
-            picker (action_state.get_current_picker prompt-bufnr)
-            picker_mode picker._original_mode
-            ]
+      (let [ actions (require :telescope.actions) ]
         (actions.close prompt-bufnr)
 
         (vim.cmd.stopinsert)
         ; (fix-telescope-cursor-position picker_mode)
-        (local curpos (vim.fn.getpos "."))
         (vim.schedule #(let [(ok? err) (pcall cmd)]
                          (when (not ok?)
                            (vim.notify err vim.log.levels.ERROR))))
@@ -77,7 +71,7 @@
 
 (fn new-mappings []
   "creates new mappings for telescope"
-  (fn attach-mappings [prompt_bufnr _]
+  (fn [prompt_bufnr _]
     (let [actions (require :telescope.actions)]
       (actions.select_default:replace #(execute-commands prompt_bufnr))
       true)
