@@ -53,50 +53,53 @@ local function new_finder(opts)
   local tables = require("runcmd.tables")
   local command = require("runcmd.command")
   local entry_maker0
-  local function _8_(...)
-    local t_9_ = opts
-    if (nil ~= t_9_) then
-      t_9_ = t_9_.entry_maker
+  local _9_
+  do
+    local t_8_ = opts
+    if (nil ~= t_8_) then
+      t_8_ = t_8_.entry_maker
     else
     end
-    return t_9_
+    _9_ = t_8_
   end
-  entry_maker0 = (_8_() or entry_maker)
+  entry_maker0 = (_9_ or entry_maker)
   local finders = require("telescope.finders")
-  local function _11_(...)
-    local t_12_ = opts
-    if (nil ~= t_12_) then
-      t_12_ = t_12_.results
+  local _12_
+  do
+    local t_11_ = opts
+    if (nil ~= t_11_) then
+      t_11_ = t_11_.results
     else
     end
-    return t_12_
+    _12_ = t_11_
   end
-  return finders.new_table({results = tables.map(command.new_command_from_object, (_11_() or {})), entry_maker = entry_maker0})
+  return finders.new_table({results = tables.map(command.new_command_from_object, (_12_ or {})), entry_maker = entry_maker0})
 end
 local function new_mappings()
-  local function attach_mappings(prompt_bufnr, _)
+  local function _14_(prompt_bufnr, _)
     local actions = require("telescope.actions")
-    local function _14_()
+    local function _15_()
       return execute_commands(prompt_bufnr)
     end
-    do end (actions.select_default):replace(_14_)
+    actions.select_default:replace(_15_)
     return true
   end
-  return attach_mappings
+  return _14_
 end
 local function open(opts)
   local pickers = require("telescope.pickers")
   local conf = require("telescope.config").values
   local picker
-  local function _15_(...)
+  local _17_
+  do
     local t_16_ = opts
     if (nil ~= t_16_) then
       t_16_ = t_16_.prompt_title
     else
     end
-    return t_16_
+    _17_ = t_16_
   end
-  picker = pickers.new(opts, {prompt_title = (_15_() or "Execute Command"), finder = new_finder(opts), sorter = conf.generic_sorter(opts), attach_mappings = new_mappings()})
+  picker = pickers.new(opts, {prompt_title = (_17_ or "Execute Command"), finder = new_finder(opts), sorter = conf.generic_sorter(opts), attach_mappings = new_mappings()})
   return picker:find()
 end
 return {open = open}

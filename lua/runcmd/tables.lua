@@ -1,15 +1,15 @@
 local function map(cmd, tbl)
-  local tbl_18_auto = {}
-  local i_19_auto = 0
+  local tbl_21_ = {}
+  local i_22_ = 0
   for _, v in ipairs(tbl) do
-    local val_20_auto = cmd(v)
-    if (nil ~= val_20_auto) then
-      i_19_auto = (i_19_auto + 1)
-      do end (tbl_18_auto)[i_19_auto] = val_20_auto
+    local val_23_ = cmd(v)
+    if (nil ~= val_23_) then
+      i_22_ = (i_22_ + 1)
+      tbl_21_[i_22_] = val_23_
     else
     end
   end
-  return tbl_18_auto
+  return tbl_21_
 end
 local function merge(...)
   local output = {}
